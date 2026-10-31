@@ -3,10 +3,12 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
-import ts from '../../node_modules/typescript/lib/typescript.js';
 
 const frontendRoot = new URL('../../', import.meta.url);
 const require = createRequire(new URL('package.json', frontendRoot));
+// 从 workspace 依赖图解析 TypeScript，避免写死 frontend/node_modules，
+// 因为 npm 可能把它提升到仓库根目录的 node_modules。
+const ts = require('typescript');
 
 export function readProductionSource(file) {
   return fs.readFileSync(new URL(file, frontendRoot), 'utf8');
